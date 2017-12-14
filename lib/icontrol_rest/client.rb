@@ -42,7 +42,7 @@ module IcontrolRest
         end
       end
     end
-    # rubocop:enable Metrics/ParameterList
+    # rubocop:enable Metrics/ParameterLists
 
     # Public: Returns a set logger. If none exists, a NullLogger is returned for stability.
     def logger
