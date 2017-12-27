@@ -76,7 +76,7 @@ module IcontrolRest
     # data    - Hash of parameters to pass with request.
     #
     # Returns - response from the server as a hash.
-    %w[post put].each do |action|
+    %w[post put patch].each do |action|
       define_method(action.to_s) do |route, data|
         body = {}
         body[:body] = data.to_json
@@ -114,13 +114,13 @@ module IcontrolRest
       send(route_chain[0].downcase, route(route_chain), args.first)
     end
 
-    # Private     - Adds methods prefixed with delete/get/post/put to object.
+    # Private     - Adds methods prefixed with delete/get/post/put/patch to object.
     #
     # method_name - Symbol of unknown method called.
     #
     # Returns     - true if the object responds to it, or if delete/get..etc.
     def respond_to_missing?(method_name, include_private = false)
-      method_name.to_s.start_with?('delete', 'get', 'post', 'put') || super
+      method_name.to_s.start_with?('delete', 'get', 'post', 'put', 'patch') || super
     end
 
     # Private     - Converts the route chain into a uri.
