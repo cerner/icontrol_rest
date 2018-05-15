@@ -5,7 +5,7 @@ require 'logger'
 require 'retriable'
 require 'uri'
 
-require 'icontrol_rest/logger'
+require 'icontrol_rest/utils/logging'
 require 'icontrol_rest/client'
 require 'icontrol_rest/version'
 

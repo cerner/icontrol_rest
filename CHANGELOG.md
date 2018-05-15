@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 3.0.0
+
+* Require 'body' and 'headers' keyword arguments when they should be provided to any request type.
+* Add support for custom headers.
+* Update Logging framework.
+
 ## 2.3.0
 
 * Adding patch method to client.

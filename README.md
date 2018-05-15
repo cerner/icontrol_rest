@@ -47,6 +47,30 @@ api.get('/mgmt/tm/sys/dns')
       "description"=>"configured-by-dhcp",
       "nameServers"=>["1.2.3.72", "1.2.3.73"],
       "search"=>["domain.com"]}
+
+# post/put/patch will allow you to specify a body and header with your request
+api.post_transaction(body: {})
+# => {"transId"=>1526674837169915,
+      "state"=>"STARTED",
+      "timeoutSeconds"=>120,
+      "asyncExecution"=>false,
+      "validateOnly"=>false,
+      "executionTimeout"=>300,
+      "executionTime"=>0,
+      "failureReason"=>"",
+      "kind"=>"tm:transactionstate",
+      "selfLink"=>"https://localhost/mgmt/tm/transaction/1526674837169915?ver=12.1.2"}
+
+api.put_sys_dns(body: { nameServers: ['1.2.3.69'] }, headers: { 'X-F5-REST-Coordination-Id' => '1526674837169915' })
+# => {"method": "PUT",
+      "uri": "https://localhost/mgmt/tm/sys/dns",
+      "body": {
+          "nameServers": ["1.2.3.69"]
+      },
+      "evalOrder": 1,
+      "commandId": 1,
+      "kind": "tm:transaction:commandsstate",
+      "selfLink": "https://localhost/mgmt/tm/transaction/1526674837169915/commands/1?ver=12.1.2"
 ```
 
 

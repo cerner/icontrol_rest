@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
+require 'json'
+
 module IcontrolRest
   # A iControl REST Client for retrieving data from F5s.
   class Client
+    include Utils::Logging
     include HTTParty
     format :json
 
@@ -44,16 +47,12 @@ module IcontrolRest
     end
     # rubocop:enable Metrics/ParameterLists
 
-    # Public: Returns a set logger. If none exists, a NullLogger is returned for stability.
-    def logger
-      @logger ||= IcontrolRest::Logging::NullLogger.new
-    end
-
-    # Public  - Delete/Get request method.
+    # Public    - Delete/Get request method.
     #
-    # route   - URI to send to server as a string.
+    # route     - URI to send to server as a string.
+    # headers   - Hash of headers to pass with request.
     #
-    # Returns - response from the server as a hash.
+    # Returns   - response from the server as a hash.
     #
     # Examples
     #
@@ -65,22 +64,21 @@ module IcontrolRest
     #         "search"=>["domain.com"]}
     #
     %w[delete get].each do |action|
-      define_method(action.to_s) do |route, _arg = nil|
-        send_request { self.class.send(action, route, @options) }
+      define_method(action.to_s) do |route, headers: {}|
+        send_request(action: action, route: route, headers: headers)
       end
     end
 
-    # Public  - Post/Put request methods.
+    # Public    - Post/Put/Patch request methods.
     #
-    # route   - URI to send to server as a string.
-    # data    - Hash of parameters to pass with request.
+    # route     - URI to send to server as a string.
+    # body      - Hash representing the request body.
+    # headers   - Hash of headers to pass with request.
     #
-    # Returns - response from the server as a hash.
+    # Returns   - response from the server as a hash.
     %w[post put patch].each do |action|
-      define_method(action.to_s) do |route, data|
-        body = {}
-        body[:body] = data.to_json
-        send_request { self.class.send(action, route, body.merge(@options)) }
+      define_method(action.to_s) do |route, body: {}, headers: {}|
+        send_request(action: action, route: route, body: body, headers: headers)
       end
     end
 
@@ -88,14 +86,18 @@ module IcontrolRest
 
     # Private - Handles response and raises error if the response isn't a 200.
     #
-    # block   - Takes block to yield.
+    # action  - The HTTP action being executed.
+    # route   - The route to send the request to.
+    # headers - A Hash representing any headers to be passed with the request.
+    # body    - A Hash representing the request body to be passed with the request.
     #
     # Returns - response from the server as a hash.
     #
     # Raises  - RuntimeError when the server returns a response that isn't a 200
-    def send_request
+    def send_request(action:, route:, headers: {}, body: nil)
       Retriable.retriable on_retry: @retry_handler, tries: @tries do
-        response = yield
+        body = body.to_json unless body.nil?
+        response = self.class.send(action, route, @options.deep_merge(body: body, headers: headers))
         sleep(@sleep) if @sleep.positive?
         return response if response.code == 200
         raise "#{response['code']}: #{response['message']}"
@@ -108,10 +110,10 @@ module IcontrolRest
     # *args       - An array of arguments passed with the method call.
     #
     # Returns     - Response from the method called.
-    def method_missing(method_name, *args)
+    def method_missing(method_name, **args)
       super unless respond_to_missing?(method_name)
       route_chain = method_name.to_s.split('_')
-      send(route_chain[0].downcase, route(route_chain), args.first)
+      send(route_chain[0].downcase, route(route_chain), args)
     end
 
     # Private     - Adds methods prefixed with delete/get/post/put/patch to object.
