@@ -39,7 +39,7 @@ module IcontrolRest
                    verify: verify_cert, timeout: timeout }
       @retry_handler = proc do |exception, try, _elapsed_time, _next_interval|
         logger.error { "#{exception.class}: #{exception.message} - try #{try}" }
-        if exception.class == JSON::ParserError
+        if exception.instance_of?(JSON::ParserError)
           logger.info { "F5 configuration utility not ready to proceed, sleeping '30' seconds." }
           sleep 30
         end
@@ -100,6 +100,7 @@ module IcontrolRest
         response = self.class.send(action, route, @options.deep_merge(body: body, headers: headers))
         sleep(@sleep) if @sleep.positive?
         return response if response.code == 200
+
         raise "#{response['code']}: #{response['message']}"
       end
     end
@@ -132,6 +133,7 @@ module IcontrolRest
     # Returns     - A URI as a string.
     def route(route_chain)
       raise 'Empty route chain.' if route_chain.length <= 1
+
       "/mgmt/tm/#{route_chain[1..route_chain.length].join('/')}"
     end
   end

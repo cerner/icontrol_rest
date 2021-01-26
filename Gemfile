@@ -4,12 +4,12 @@ source 'https://rubygems.org'
 gemspec
 
 group :development do
-  gem 'bundler', '~> 1.11'
+  gem 'bundler', '~> 2.2'
   gem 'pry'
 end
 
 # build-time dependencies
 gem 'rake', '~> 10.0'
 gem 'rspec', '~> 3.4'
-gem 'rubocop', '~> 0.52'
+gem 'rubocop', '~> 1.2'
 gem 'simplecov', '~> 0.13'

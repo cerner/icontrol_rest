@@ -41,6 +41,8 @@ module IcontrolRest
       #
       #   null_logger = NullLogger.new(STDOUT)
       #   null_logger.info { 'This message will never get writen' }
+      #
+      # rubocop:disable Lint/MissingSuper
       class NullLogger < Logger
         # Intentionally do nothing
         def initialize(*_args); end
@@ -48,6 +50,7 @@ module IcontrolRest
         # Intentionally do nothing
         def add(*_args, &_block); end
       end
+      # rubocop:enable Lint/MissingSuper
     end
   end
 end

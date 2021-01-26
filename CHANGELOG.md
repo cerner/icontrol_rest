@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.0.1
+
+* Uplift for Ruby 2.7 support.
+
 ## 3.0.0
 
 * Require 'body' and 'headers' keyword arguments when they should be provided to any request type.
