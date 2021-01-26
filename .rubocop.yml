@@ -1,26 +1,28 @@
 AllCops:
   TargetRubyVersion: 2.4
+  SuggestExtensions: false
+  NewCops: enable
   Exclude:
     - '**/Vagrantfile'
     - 'examples/**/*'
     - 'vendor/**/*'
     - 'Gemfile'
 
-AbcSize:
+Metrics/AbcSize:
   Max: 18
 
-ClassLength:
+Metrics/ClassLength:
   Max: 120
 
-LineLength:
+Layout/LineLength:
   Max: 120
 
-MethodLength:
+Metrics/MethodLength:
   Max: 12
 
-ModuleLength:
+Metrics/ModuleLength:
   Max: 120
 
-BlockLength:
+Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
