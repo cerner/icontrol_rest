@@ -114,7 +114,7 @@ module IcontrolRest
     def method_missing(method_name, **args)
       super unless respond_to_missing?(method_name)
       route_chain = method_name.to_s.split('_')
-      send(route_chain[0].downcase, route(route_chain), args)
+      send(route_chain[0].downcase, route(route_chain), **args)
     end
 
     # Private     - Adds methods prefixed with delete/get/post/put/patch to object.
