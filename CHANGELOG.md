@@ -3,6 +3,7 @@
 ## 3.0.1
 
 * Uplift for Ruby 2.7 support.
+* Add double splat to method_missing so that explicit hash is passed.
 
 ## 3.0.0
 
